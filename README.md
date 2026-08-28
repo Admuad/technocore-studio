@@ -31,7 +31,7 @@ Everything runs **100% locally in your web browser** — from generating cryptog
 
 Access the live zero-install studio directly from your browser or mobile phone:
 
-👉 **[https://technocore-studio.vercel.app/](https://technocore-studio.vercel.app/)** 
+👉 **[https://technocore-studio-ten.vercel.app/](https://technocore-studio-ten.vercel.app/)** 
 
 ---
 
