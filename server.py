@@ -29,10 +29,12 @@ class StudioHandler(http.server.SimpleHTTPRequestHandler):
                     target_url,
                     headers={
                         'User-Agent': 'TechnocoreStudio/1.0',
-                        'Accept': '*/*'
+                        'Accept': '*/*',
+                        'Connection': 'close'
                     }
                 )
-                with urllib.request.urlopen(req, timeout=5) as resp:
+                # 15 second timeout to tolerate network jitter & TLS handshake spikes
+                with urllib.request.urlopen(req, timeout=15) as resp:
                     data = resp.read()
                     status = resp.status
                     content_type = resp.headers.get('Content-Type', 'text/plain; charset=utf-8')
@@ -63,10 +65,9 @@ class StudioHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
 if __name__ == '__main__':
-    # Use ThreadingHTTPServer for concurrent non-blocking request handling
     server_address = ("", PORT)
     httpd = http.server.ThreadingHTTPServer(server_address, StudioHandler)
-    print(f"Technocore Studio multithreaded server running on http://localhost:{PORT}")
+    print(f"Technocore Studio server running on http://localhost:{PORT}")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
