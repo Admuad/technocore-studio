@@ -61,6 +61,14 @@ export function getShardedKvPath(didOrFingerprint) {
   };
 }
 
+function sweepText(text, maxChars = 4096) {
+  if (typeof text !== 'string') throw new Error("Text must be a string");
+  const cleaned = text.replace(/[\p{Cc}\p{Cf}\p{Cs}\p{Co}\p{Zl}\p{Zp}]/gu, ' ').trim();
+  if (!cleaned) throw new Error("No visible characters left after sweep");
+  if (cleaned.length > maxChars) throw new Error(`Text exceeds ${maxChars} character limit`);
+  return cleaned;
+}
+
 // Smart Multi-format Input Parser (.env, JSON, raw hex, passphrase)
 function extractSeedFromInput(rawInput) {
   if (!rawInput || typeof rawInput !== 'string') return "";
