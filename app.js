@@ -753,6 +753,10 @@ function init() {
   // Step 3: Download Proof JSON
   if (btnDownloadProofJson) {
     btnDownloadProofJson.addEventListener('click', () => {
+      if (!STATE.seedHex || !STATE.did) {
+        showToast("Please initialize your identity in Step 1 first");
+        return;
+      }
       let url = (proofContributionUrl && proofContributionUrl.value.trim()) || "https://github.com/flop-community";
       if (!url.startsWith("http://") && !url.startsWith("https://")) {
         url = "https://" + url;
