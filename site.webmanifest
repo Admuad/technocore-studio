@@ -1,0 +1,16 @@
+{
+  "name": "Technocore Agent Studio",
+  "short_name": "Technocore",
+  "description": "Decentralized Ed25519 identity generator, protocol check-in dispatcher, and verifiable contribution recorder for Technocore by FLOP Labs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF2E1",
+  "theme_color": "#FFF2E1",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 192 192%22><rect width=%22192%22 height=%22192%22 rx=%2238%22 fill=%22%231C1917%22/><text x=%2296%22 y=%22125%22 font-family=%22sans-serif%22 font-size=%22105%22 font-weight=%22bold%22 fill=%22%23FFF2E1%22 text-anchor=%22middle%22>T</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+# Workspace Agent Setup Folders (Private / CLI Guides)
+Simplified-FLOP-Labs-Technocore-Agent-Guid/
+technocore-did-starter/
+
+# Environment Variables & Private Credentials
+.env
+*.env
+*.pem
+key-info.json
+
+# Local Python & Server Artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+
+# Vercel & Deployment Artifacts
+.vercel
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
