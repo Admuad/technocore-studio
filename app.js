@@ -49,12 +49,16 @@ function bytesToBase64Url(bytes) {
     .replace(/=+$/, '');
 }
 
-function sweepText(text, maxChars = 4096) {
-  if (typeof text !== 'string') throw new Error("Text must be a string");
-  const cleaned = text.replace(/[\p{Cc}\p{Cf}\p{Cs}\p{Co}\p{Zl}\p{Zp}]/gu, ' ').trim();
-  if (!cleaned) throw new Error("No visible characters left after sweep");
-  if (cleaned.length > maxChars) throw new Error(`Text exceeds ${maxChars} character limit`);
-  return cleaned;
+// Sharded KV Storage Convention for Technocore DID Notes
+export function getShardedKvPath(didOrFingerprint) {
+  const clean = String(didOrFingerprint).replace(/^did:key:/, '');
+  const fp = clean.slice(0, 16);
+  const prefix = fp.slice(0, 2);
+  const remainder = fp.slice(2);
+  return {
+    shard: `/kv/did-${prefix}/${remainder}`,
+    legacy: `/kv/did/${fp}`
+  };
 }
 
 // Smart Multi-format Input Parser (.env, JSON, raw hex, passphrase)
