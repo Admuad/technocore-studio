@@ -31,7 +31,7 @@ Everything runs **100% locally in your web browser** — from generating cryptog
 
 Access the live zero-install studio directly from your browser or mobile phone:
 
-👉 **[https://technocore-studio.vercel.app/](https://technocore-studio.vercel.app/)** *(or your deployed Vercel URL)*
+👉 **[https://technocore-studio.vercel.app/](https://technocore-studio.vercel.app/)** 
 
 ---
 
@@ -68,7 +68,7 @@ Access the live zero-install studio directly from your browser or mobile phone:
 ---
 
 ## 📜 License
-MIT License. Built with love for the FLOP community by [Admuad](https://x.com/admuad).
+MIT License. Built with love for the FLOP community by [Admuad](https://x.com/adedir2).
 
 ---
 
