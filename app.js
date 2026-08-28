@@ -101,28 +101,23 @@ function extractSeedFromInput(rawInput) {
   return trimmed;
 }
 
-// Ultra-fast Multi-Gateway Network Transport
+// Multi-Tier Resilient Network Transport (Vercel Edge / Serverless + Multi-Gateway Failover)
 async function resilientFetchJson(targetUrl) {
   const cacheBustUrl = targetUrl + (targetUrl.includes('?') ? '&' : '?') + `_ts=${Date.now()}`;
-  
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    try {
-      const localProxyUrl = `/api/proxy?url=${encodeURIComponent(cacheBustUrl)}`;
-      const res = await fetch(localProxyUrl, { cache: 'no-store' });
-      if (res.ok) return await res.json();
-    } catch (e) {}
-  }
+  const encoded = encodeURIComponent(cacheBustUrl);
 
   const gateways = [
-    `/api/proxy?url=${encodeURIComponent(cacheBustUrl)}`,
-    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(cacheBustUrl)}`,
+    `/api/proxy?url=${encoded}`,
+    `https://corsproxy.io/?url=${encoded}`,
+    `https://api.allorigins.win/raw?url=${encoded}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encoded}`,
     cacheBustUrl
   ];
 
   for (const url of gateways) {
     try {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 3500);
+      const timer = setTimeout(() => controller.abort(), 4500);
       const res = await fetch(url, { signal: controller.signal, cache: 'no-store' });
       clearTimeout(timer);
       if (res.ok) {
@@ -138,26 +133,20 @@ async function resilientFetchJson(targetUrl) {
 
 async function resilientFetchText(targetUrl) {
   const cacheBustUrl = targetUrl + (targetUrl.includes('?') ? '&' : '?') + `_ts=${Date.now()}`;
-  
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    try {
-      const localProxyUrl = `/api/proxy?url=${encodeURIComponent(cacheBustUrl)}`;
-      const res = await fetch(localProxyUrl, { cache: 'no-store' });
-      const text = await res.text();
-      if (res.ok) return { ok: true, status: res.status, text };
-    } catch (e) {}
-  }
+  const encoded = encodeURIComponent(cacheBustUrl);
 
   const gateways = [
-    `/api/proxy?url=${encodeURIComponent(cacheBustUrl)}`,
-    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(cacheBustUrl)}`,
+    `/api/proxy?url=${encoded}`,
+    `https://corsproxy.io/?url=${encoded}`,
+    `https://api.allorigins.win/raw?url=${encoded}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encoded}`,
     cacheBustUrl
   ];
 
   for (const url of gateways) {
     try {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 4000);
+      const timer = setTimeout(() => controller.abort(), 5000);
       const res = await fetch(url, { signal: controller.signal, cache: 'no-store' });
       clearTimeout(timer);
       const text = await res.text();
