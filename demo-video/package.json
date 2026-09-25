@@ -1,0 +1,22 @@
+{
+  "name": "technocore-demo-video",
+  "version": "1.0.0",
+  "description": "Programmatic Remotion demo videos for Technocore Agent Studio and FLOP Labs Testnet",
+  "scripts": {
+    "start": "remotion preview src/index.ts",
+    "build": "remotion render src/index.ts TechnocoreStudioDemo out/technocore-studio-demo.mp4",
+    "build:teaser": "remotion render src/index.ts FlopTestnetTeaser out/flop-testnet-teaser.mp4",
+    "test": "remotion versions"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.218",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.218"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.5.4"
+  }
+}

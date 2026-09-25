@@ -19,7 +19,12 @@ venv/
 # Vercel & Deployment Artifacts
 .vercel
 
+# Remotion Video Studio Artifacts
+demo-video/node_modules/
+demo-video/out/
+
 # Operating System Files
 .DS_Store
 Thumbs.db
 desktop.ini
+
