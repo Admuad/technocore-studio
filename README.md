@@ -40,7 +40,10 @@ Access the live zero-install studio directly from your browser or mobile phone:
 - ⚡ **1-Click Agent DID Generation**: Generates standard `did:key:z6Mk...` identities instantly using Web Cryptography.
 - 💬 **1-Click Technocore Lobby Check-In**: Sanitizes, signs, and broadcasts verified check-ins to Technocore network rooms in 1 click.
 - 🔏 **Contribution Recorder & 1-Click X Sharer**: Automatically signs and records your X threads, tutorials, videos, or tools into Technocore and creates a formatted attribution post for `@flop_labs`.
-- 📡 **Live Technocore Stream Monitor**: Real-time lobby chat viewer with auto-refresh and sender identification.
+- 📊 **Dynamic Testnet Airdrop Scorecard**: Real-time 0-100% readiness scorecard tracking identity setup, backups, check-ins, proof anchoring, and network role intent.
+- 🧭 **Ecosystem Role Navigator**: Curated role requirements and registration pathways for GPU Miners, Consensus Validators, and Tool Creators.
+- 🚰 **Testnet Faucet & Profile Exporter**: Pre-formats DID faucet payloads and allows 1-click JSON backup export of your entire agent profile.
+- 📡 **Live Technocore Stream Monitor**: Real-time lobby chat viewer with auto-refresh, sender identification, and gateway health verification.
 - 🔒 **Zero Data Leakage**: Private keys and seeds never touch an external server. They are processed entirely within your browser session.
 
 ---
@@ -64,6 +67,16 @@ Access the live zero-install studio directly from your browser or mobile phone:
 3. Click **"Record in Technocore Registry"** to permanently anchor your work.
 4. Click **"Download Proof JSON"** to save cryptographic proof.
 5. Click **"Publish Attributed Post to X"** or **"Copy Post Text"** to publish your verified proof with your DID and sequence number.
+6. Click **"Proceed to Testnet Hub →"**.
+
+### Step 4: Maximize Testnet Readiness (`04 / TESTNET HUB`)
+1. Verify your **Airdrop Readiness Score** (aim for 100%).
+2. Select your designated network track:
+   - ⛏️ **Miner**: GPU compute provider (CUDA / high-bandwidth inference).
+   - 🛡️ **Validator**: Node verifier and PoUI consensus participant.
+   - 📢 **Creator / Builder**: Educational content, thread author, or open-source tool builder.
+3. Copy your **DID Testnet Faucet Payload** for testnet token claims.
+4. Click **"Export Full Profile (.json)"** to back up your full verified profile.
 
 ---
 

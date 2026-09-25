@@ -162,6 +162,7 @@ async function resilientFetchText(targetUrl) {
 }
 
 // Application State
+// Application State
 const STATE = {
   seedHex: localStorage.getItem("flop_seed_hex") || "",
   did: localStorage.getItem("flop_did") || "",
@@ -169,6 +170,8 @@ const STATE = {
   step1Completed: Boolean(localStorage.getItem("flop_seed_hex")),
   step2Completed: Boolean(localStorage.getItem("flop_last_seq")),
   keyDownloaded: Boolean(localStorage.getItem("flop_key_downloaded")),
+  proofAnchored: Boolean(localStorage.getItem("flop_proof_anchored")),
+  selectedRole: localStorage.getItem("flop_selected_role") || "",
   isSeedVisible: false,
   currentStep: 1,
   pollInterval: null,
@@ -197,6 +200,87 @@ async function copyText(text, label) {
     showToast(`${label} copied to clipboard`);
   } catch (err) {
     showToast('Copy failed: ' + err.message);
+  }
+}
+
+// Dynamic Readiness Scorecard Calculation
+export function updateReadinessScorecard() {
+  let score = 0;
+  const hasDid = Boolean(STATE.did && STATE.seedHex);
+  const hasBackup = Boolean(STATE.keyDownloaded);
+  const hasCheckin = Boolean(STATE.step2Completed);
+  const hasProof = Boolean(STATE.proofAnchored || localStorage.getItem("flop_proof_anchored"));
+  const hasRole = Boolean(STATE.selectedRole);
+
+  if (hasDid) score += 20;
+  if (hasBackup) score += 20;
+  if (hasCheckin) score += 20;
+  if (hasProof) score += 20;
+  if (hasRole) score += 20;
+
+  // Update score progress fill & badge
+  const scoreFill = document.getElementById('score-progress-fill');
+  const scoreBadge = document.getElementById('score-badge');
+  if (scoreFill) {
+    scoreFill.style.width = `${score}%`;
+    scoreFill.classList.toggle('full', score === 100);
+  }
+  if (scoreBadge) {
+    if (score === 100) {
+      scoreBadge.textContent = "100% Testnet Ready";
+      scoreBadge.className = "score-badge score-ready";
+    } else if (score > 0) {
+      scoreBadge.textContent = `${score}% Prepared`;
+      scoreBadge.className = "score-badge";
+    } else {
+      scoreBadge.textContent = "0% Prepared";
+      scoreBadge.className = "score-badge";
+    }
+  }
+
+  // Update Checklist Items
+  const updateItem = (id, isDone) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle('completed', isDone);
+    const statusSpan = el.querySelector('.checklist-status');
+    if (statusSpan) {
+      statusSpan.innerHTML = isDone ? '&#x2713;' : '&#x25CB;';
+    }
+  };
+
+  updateItem('check-item-did', hasDid);
+  updateItem('check-item-backup', hasBackup);
+  updateItem('check-item-checkin', hasCheckin);
+  updateItem('check-item-proof', hasProof);
+  updateItem('check-item-role', hasRole);
+
+  // Update Role Tag
+  const roleTag = document.getElementById('active-role-tag');
+  if (roleTag) {
+    if (hasRole) {
+      const roleNames = { miner: 'Miner (GPU)', validator: 'Validator (Node)', creator: 'Creator (Builder)' };
+      roleTag.textContent = roleNames[STATE.selectedRole] || STATE.selectedRole;
+      roleTag.className = 'badge-role-tag selected';
+    } else {
+      roleTag.textContent = 'Unselected';
+      roleTag.className = 'badge-role-tag';
+    }
+  }
+
+  // Update Role Cards Active State
+  document.querySelectorAll('.role-card').forEach(card => {
+    const role = card.getAttribute('data-role');
+    const isSelected = role === STATE.selectedRole;
+    card.classList.toggle('selected', isSelected);
+    const radio = card.querySelector('input[type="radio"]');
+    if (radio) radio.checked = isSelected;
+  });
+
+  // Update Faucet payload text
+  const faucetPayload = document.getElementById('display-faucet-payload');
+  if (faucetPayload) {
+    faucetPayload.textContent = STATE.did ? STATE.did : "Initialize DID in Step 1 first";
   }
 }
 
@@ -235,12 +319,15 @@ export function setStep(targetStep) {
     const num = parseInt(panel.getAttribute('data-step'), 10);
     panel.classList.toggle('active', num === targetStep);
   });
+
+  updateReadinessScorecard();
 }
 
 function updateStepperState() {
   const tab1 = document.getElementById('tab-step-1');
   const tab2 = document.getElementById('tab-step-2');
   const tab3 = document.getElementById('tab-step-3');
+  const tab4 = document.getElementById('tab-step-4');
   const btnGoStep2 = document.getElementById('btn-go-step2');
   const btnGoStep3 = document.getElementById('btn-go-step3');
   const downloadBtnText = document.getElementById('download-btn-text');
@@ -271,6 +358,12 @@ function updateStepperState() {
     if (tab3) tab3.classList.add('disabled');
     if (btnGoStep3) btnGoStep3.disabled = true;
   }
+
+  if (STATE.proofAnchored || localStorage.getItem("flop_proof_anchored")) {
+    if (tab3) tab3.classList.add('completed');
+  }
+
+  updateReadinessScorecard();
 }
 
 // Key Management
@@ -718,6 +811,10 @@ function init() {
         currentTweetText = `I published a contribution for Technocore by @flop_labs.\n\nTopic: ${topic}\nContribution: ${url}\nAgent DID: ${STATE.did}\nSigned Technocore record: room technocore, sequence #${seq}`;
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(currentTweetText)}`;
         
+        STATE.proofAnchored = true;
+        localStorage.setItem("flop_proof_anchored", "true");
+        updateStepperState();
+
         if (shareActionGroup) {
           shareActionGroup.style.display = "flex";
         }
@@ -771,6 +868,10 @@ function init() {
         schema: "technocore-contribution-proof-v1",
         signature: sig
       };
+
+      STATE.proofAnchored = true;
+      localStorage.setItem("flop_proof_anchored", "true");
+      updateStepperState();
       
       const blob = new Blob([JSON.stringify(proofObj, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
@@ -778,6 +879,148 @@ function init() {
       a.download = 'technocore-contribution-proof.json';
       a.click();
       showToast("Downloaded official technocore-contribution-proof.json");
+    });
+  }
+
+  // Navigation between Step 3 & Step 4
+  const btnGoStep4 = document.getElementById('btn-go-step4');
+  if (btnGoStep4) btnGoStep4.addEventListener('click', () => setStep(4));
+
+  const btnBackStep3 = document.getElementById('btn-back-step3');
+  if (btnBackStep3) btnBackStep3.addEventListener('click', () => setStep(3));
+
+  // Step 4 Checklist Jump Actions
+  const actionJumpStep1 = document.getElementById('action-jump-step1');
+  if (actionJumpStep1) actionJumpStep1.addEventListener('click', () => setStep(1));
+
+  const actionBackupKey = document.getElementById('action-backup-key');
+  if (actionBackupKey) actionBackupKey.addEventListener('click', downloadEnvFile);
+
+  const actionJumpStep2 = document.getElementById('action-jump-step2');
+  if (actionJumpStep2) actionJumpStep2.addEventListener('click', () => setStep(2));
+
+  const actionJumpStep3 = document.getElementById('action-jump-step3');
+  if (actionJumpStep3) actionJumpStep3.addEventListener('click', () => setStep(3));
+
+  // Step 4 Role Selection
+  document.querySelectorAll('.role-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const role = card.getAttribute('data-role');
+      if (!role) return;
+      STATE.selectedRole = role;
+      localStorage.setItem("flop_selected_role", role);
+      const roleTitles = { miner: 'GPU Miner', validator: 'Validator Node', creator: 'Creator & Builder' };
+      showToast(`Selected Track: ${roleTitles[role] || role}`);
+      updateReadinessScorecard();
+    });
+  });
+
+  // Step 4 Copy Faucet Payload
+  const btnCopyFaucetPayload = document.getElementById('btn-copy-faucet-payload');
+  if (btnCopyFaucetPayload) {
+    btnCopyFaucetPayload.addEventListener('click', () => {
+      if (!STATE.did) {
+        showToast("Please initialize your Agent DID in Step 1 first");
+        return;
+      }
+      copyText(STATE.did, "Testnet DID Faucet Payload");
+    });
+  }
+
+  // Step 4 Export Full Technocore Profile JSON
+  const btnExportProfile = document.getElementById('btn-export-profile');
+  if (btnExportProfile) {
+    btnExportProfile.addEventListener('click', () => {
+      if (!STATE.did && !STATE.seedHex) {
+        showToast("No active identity found. Initialize your identity in Step 1 first.");
+        return;
+      }
+
+      let score = 0;
+      if (STATE.did && STATE.seedHex) score += 20;
+      if (STATE.keyDownloaded) score += 20;
+      if (STATE.step2Completed) score += 20;
+      if (STATE.proofAnchored || localStorage.getItem("flop_proof_anchored")) score += 20;
+      if (STATE.selectedRole) score += 20;
+
+      const profile = {
+        app: "Technocore Agent Studio",
+        version: "1.1.0",
+        exportTimestamp: new Date().toISOString(),
+        network: {
+          name: "Technocore / FLOP Labs",
+          incentivePool: "3.5 Billion $FLOP",
+          consensus: "Proof-of-Useful-Inference (PoUI)",
+          testnetWindow: "October - December 2026",
+          genesisBlock: "Q1 2027"
+        },
+        agent: {
+          did: STATE.did || "None",
+          seedHex: STATE.seedHex || "None",
+          lastCheckinSequence: STATE.lastSeq || "None",
+          selectedRoleTrack: STATE.selectedRole || "Unselected",
+          readinessScore: `${score}%`
+        },
+        checklist: {
+          didInitialized: Boolean(STATE.did),
+          backupSecured: Boolean(STATE.keyDownloaded),
+          checkinBroadcasted: Boolean(STATE.step2Completed),
+          proofAnchored: Boolean(STATE.proofAnchored || localStorage.getItem("flop_proof_anchored")),
+          roleSelected: Boolean(STATE.selectedRole)
+        }
+      };
+
+      const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `technocore-agent-profile-${STATE.did ? STATE.did.slice(-8) : 'export'}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast("Technocore Agent Profile exported successfully");
+    });
+  }
+
+  // Step 4 Verify Gateway Connectivity
+  const btnPingGateway = document.getElementById('btn-ping-gateway');
+  const pingBtnText = document.getElementById('ping-btn-text');
+  const pingStatusResult = document.getElementById('ping-status-result');
+
+  if (btnPingGateway) {
+    btnPingGateway.addEventListener('click', async () => {
+      btnPingGateway.disabled = true;
+      if (pingBtnText) pingBtnText.textContent = "Pinging Gateways...";
+      if (pingStatusResult) {
+        pingStatusResult.style.display = "block";
+        pingStatusResult.style.color = "var(--color-text-secondary)";
+        pingStatusResult.textContent = "Testing Technocore gateway latency...";
+      }
+
+      const startTime = performance.now();
+      try {
+        const testUrl = `https://technocore.chat/r/lobby?format=json&limit=1`;
+        const data = await resilientFetchJson(testUrl);
+        const duration = Math.round(performance.now() - startTime);
+
+        if (data && Array.isArray(data.messages)) {
+          if (pingStatusResult) {
+            pingStatusResult.style.color = "var(--color-success)";
+            pingStatusResult.textContent = `Gateway Healthy (Latency: ${duration}ms, Room: lobby, Last Seq: #${data.messages[0]?.seq || 'Live'})`;
+          }
+          showToast(`Gateway Healthy (${duration}ms)`);
+        } else {
+          throw new Error("Invalid telemetry response");
+        }
+      } catch (err) {
+        const duration = Math.round(performance.now() - startTime);
+        if (pingStatusResult) {
+          pingStatusResult.style.color = "var(--color-donkey-dark)";
+          pingStatusResult.textContent = `Gateway unreachable (${duration}ms). Failover proxies active.`;
+        }
+        showToast("Gateway ping timed out, using fallback proxies");
+      } finally {
+        btnPingGateway.disabled = false;
+        if (pingBtnText) pingBtnText.textContent = "Verify Gateway Health";
+      }
     });
   }
 

@@ -87,6 +87,10 @@
           <span class="step-num">03 / ATTRIBUTION</span>
           <span class="step-label">Record Proof & Share</span>
         </button>
+        <button class="step-tab" role="tab" id="tab-step-4" aria-selected="false" aria-controls="panel-step-4" data-step="4">
+          <span class="step-num">04 / TESTNET HUB</span>
+          <span class="step-label">Campaign & Readiness</span>
+        </button>
       </nav>
 
       <!-- Main Grid -->
@@ -238,9 +242,185 @@
               </button>
             </div>
 
-            <div class="btn-group" style="margin-top: 1.25rem;">
+            <div class="btn-group" style="margin-top: 1.25rem; justify-content: space-between;">
               <button class="btn btn-secondary" id="btn-back-step2" aria-label="Return to protocol check-in step">
                 <span>&larr; Back to Check-In</span>
+              </button>
+              <button class="btn btn-accent" id="btn-go-step4" aria-label="Proceed to Testnet Campaign Hub">
+                <span>Proceed to Testnet Hub &rarr;</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- STEP 4: TESTNET PREP HUB -->
+          <section class="panel-card step-panel" role="tabpanel" id="panel-step-4" aria-labelledby="tab-step-4" data-step="4">
+            <div class="panel-header">
+              <h2>04. FLOP Testnet Campaign & Readiness Hub</h2>
+              <p>Verify your qualification for the 3.5B $FLOP testnet incentive pool, register intent for specialized network roles, and prepare your DID for the upcoming Q4 testnet launch.</p>
+            </div>
+
+            <!-- Bento Campaign Metrics -->
+            <div class="campaign-bento-grid">
+              <div class="bento-card">
+                <span class="bento-label">Airdrop Allocation</span>
+                <span class="bento-value">3.5B $FLOP</span>
+                <span class="bento-sub">~20% of total network supply</span>
+              </div>
+              <div class="bento-card">
+                <span class="bento-label">Testnet Window</span>
+                <span class="bento-value">Oct – Dec 2026</span>
+                <span class="bento-sub">Proof-of-Useful-Inference phase</span>
+              </div>
+              <div class="bento-card">
+                <span class="bento-label">Consensus Protocol</span>
+                <span class="bento-value">PoUI Engine</span>
+                <span class="bento-sub">Decentralized AI compute settlement</span>
+              </div>
+              <div class="bento-card">
+                <span class="bento-label">Genesis Block</span>
+                <span class="bento-value">Q1 2027</span>
+                <span class="bento-sub">Mainnet Token Generation Event</span>
+              </div>
+            </div>
+
+            <!-- Dynamic Readiness Scorecard -->
+            <div class="scorecard-wrap">
+              <div class="scorecard-header">
+                <div>
+                  <h3 style="font-size: 1rem; font-weight: 700; color: var(--color-text-primary);">Testnet Airdrop Readiness Score</h3>
+                  <p style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 0.15rem;">Live score calculated from your local identity, on-chain protocol proof, and campaign participation.</p>
+                </div>
+                <div class="score-badge" id="score-badge">0% Prepared</div>
+              </div>
+
+              <div class="score-progress-bar">
+                <div class="score-progress-fill" id="score-progress-fill" style="width: 0%;"></div>
+              </div>
+
+              <!-- Interactive Checklist Items -->
+              <div class="checklist-container">
+                <div class="checklist-item" id="check-item-did">
+                  <span class="checklist-status" aria-hidden="true">&#x25CB;</span>
+                  <div class="checklist-text">
+                    <span class="checklist-title">1. Generate & Secure Agent DID</span>
+                    <span class="checklist-desc">Cryptographic Ed25519 did:key active in local session</span>
+                  </div>
+                  <button class="btn-subtle-link" id="action-jump-step1">Setup DID</button>
+                </div>
+
+                <div class="checklist-item" id="check-item-backup">
+                  <span class="checklist-status" aria-hidden="true">&#x25CB;</span>
+                  <div class="checklist-text">
+                    <span class="checklist-title">2. Download Key Backup (.env)</span>
+                    <span class="checklist-desc">Offline private seed secured against loss</span>
+                  </div>
+                  <button class="btn-subtle-link" id="action-backup-key">Download</button>
+                </div>
+
+                <div class="checklist-item" id="check-item-checkin">
+                  <span class="checklist-status" aria-hidden="true">&#x25CB;</span>
+                  <div class="checklist-text">
+                    <span class="checklist-title">3. Broadcast Signed Lobby Check-In</span>
+                    <span class="checklist-desc">Active cryptographic presence registered in Technocore</span>
+                  </div>
+                  <button class="btn-subtle-link" id="action-jump-step2">Check-In</button>
+                </div>
+
+                <div class="checklist-item" id="check-item-proof">
+                  <span class="checklist-status" aria-hidden="true">&#x25CB;</span>
+                  <div class="checklist-text">
+                    <span class="checklist-title">4. Anchor Verifiable Contribution</span>
+                    <span class="checklist-desc">Public tutorial, thread, or tool anchored in KV registry</span>
+                  </div>
+                  <button class="btn-subtle-link" id="action-jump-step3">Add Proof</button>
+                </div>
+
+                <div class="checklist-item" id="check-item-role">
+                  <span class="checklist-status" aria-hidden="true">&#x25CB;</span>
+                  <div class="checklist-text">
+                    <span class="checklist-title">5. Select Ecosystem Role Intent</span>
+                    <span class="checklist-desc">Designated track for Miner, Validator, or Creator tasks</span>
+                  </div>
+                  <span class="badge-role-tag" id="active-role-tag">Unselected</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Role Application Navigator -->
+            <div style="margin-top: 1.4rem;">
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: 0.6rem;">Ecosystem Role Tracks</h3>
+              <div class="role-grid">
+                <!-- Miner Role Card -->
+                <div class="role-card" id="role-card-miner" data-role="miner">
+                  <div class="role-card-top">
+                    <div class="role-badge role-badge-miner">Miner Track</div>
+                    <input type="radio" name="selected-role" id="radio-miner" value="miner" aria-label="Select Miner Track">
+                  </div>
+                  <h4 class="role-title">GPU Compute Provider</h4>
+                  <p class="role-desc">Provide dedicated GPU capacity (RTX 4090, A100, H100) to execute useful inference workloads for AI agents.</p>
+                  <div class="role-reqs">
+                    <span>Hardware: CUDA-enabled GPU</span>
+                    <span>Uptime: >99% Target</span>
+                  </div>
+                </div>
+
+                <!-- Validator Role Card -->
+                <div class="role-card" id="role-card-validator" data-role="validator">
+                  <div class="role-card-top">
+                    <div class="role-badge role-badge-validator">Validator Track</div>
+                    <input type="radio" name="selected-role" id="radio-validator" value="validator" aria-label="Select Validator Track">
+                  </div>
+                  <h4 class="role-title">Consensus Node & Verifier</h4>
+                  <p class="role-desc">Verify compute receipts, run validation nodes, and secure state transitions in the Proof-of-Useful-Inference layer.</p>
+                  <div class="role-reqs">
+                    <span>Server: 32GB RAM / NVMe</span>
+                    <span>Role: Verification & Slashing</span>
+                  </div>
+                </div>
+
+                <!-- Creator / Builder Role Card -->
+                <div class="role-card" id="role-card-creator" data-role="creator">
+                  <div class="role-card-top">
+                    <div class="role-badge role-badge-creator">Creator Track</div>
+                    <input type="radio" name="selected-role" id="radio-creator" value="creator" aria-label="Select Creator Track">
+                  </div>
+                  <h4 class="role-title">Tool Builder & Ambassador</h4>
+                  <p class="role-desc">Build open-source tools, write technical deep-dives, create educational content, and onboard agents into the FLOP ecosystem.</p>
+                  <div class="role-reqs">
+                    <span>Deliverables: Tools, Tutorials, X Threads</span>
+                    <span>Attribution: @flop_labs</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Testnet Faucet & Profile Utility Tools -->
+            <div class="testnet-tools-card" style="margin-top: 1.4rem;">
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: 0.6rem;">Testnet Utility & Readiness Tools</h3>
+              
+              <div class="form-field">
+                <label class="field-label-text" id="label-faucet-payload">DID Testnet Faucet Payload</label>
+                <div class="identity-value-wrap">
+                  <div class="identity-code" id="display-faucet-payload" aria-labelledby="label-faucet-payload">did:key:z6Mk...</div>
+                  <button class="btn-icon" id="btn-copy-faucet-payload" title="Copy Faucet Payload" aria-label="Copy Faucet Payload">Copy</button>
+                </div>
+                <div class="field-helper">Pre-formatted DID identifier ready to claim testnet gas & compute tokens when the official faucet opens.</div>
+              </div>
+
+              <div class="btn-group" style="margin-top: 1rem; flex-wrap: wrap;">
+                <button class="btn btn-primary" id="btn-export-profile" aria-label="Export full Technocore profile JSON file">
+                  <span>Export Full Profile (.json)</span>
+                </button>
+                <button class="btn btn-secondary" id="btn-ping-gateway" aria-label="Verify Technocore Gateway Connectivity">
+                  <span id="ping-btn-text">Verify Gateway Health</span>
+                </button>
+              </div>
+              <div id="ping-status-result" style="display: none; margin-top: 0.6rem; font-size: 0.78rem; font-weight: 600;" role="status"></div>
+            </div>
+
+            <div class="btn-group" style="margin-top: 1.25rem;">
+              <button class="btn btn-secondary" id="btn-back-step3" aria-label="Return to attribution and proof step">
+                <span>&larr; Back to Attribution</span>
               </button>
             </div>
           </section>
